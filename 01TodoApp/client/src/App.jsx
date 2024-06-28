@@ -1,5 +1,10 @@
 import React from "react"
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom"
 import Home from "./Pages/Home"
 import Header from "./Components/Header"
 import SignUp from "./Pages/SignUp"
@@ -14,13 +19,14 @@ function App() {
       <Router>
         <Header />
         <Routes>
+          <Route path="/sing-in" element={<SignIn />} />
+          <Route path="/sign-up" element={<SignUp />} />
           <Route element={<ProtectRouter />}>
             <Route path="/" element={<Home />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/task" element={<Task />} />
           </Route>
-          <Route path="/sing-in" element={<SignIn />} />
-          <Route path="/sign-up" element={<SignUp />} />
-          <Route path="/task" element={<Task />} />
+          <Route path="*" element={<Navigate to={"/"} />} />
         </Routes>
       </Router>
     </>

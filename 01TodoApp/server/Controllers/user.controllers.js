@@ -67,6 +67,7 @@ export const Update = async (req, res, next) => {
     return next(errorHandler(404, "you have Update only your account"))
   }
   try {
+    console.log(req.body)
     if (req.body.email) {
       const existEmail = await User.findOne({ email: req.body.email })
 
@@ -80,7 +81,8 @@ export const Update = async (req, res, next) => {
     }
 
     const { id } = req.params
-
+    // console.log(req.user.id);
+    // console.log(id);
     const UserUpdated = await User.findByIdAndUpdate(
       id,
       {
@@ -92,6 +94,7 @@ export const Update = async (req, res, next) => {
       },
       { new: true }
     )
+    // console.log(UserUpdated)
 
     const { password, ...rest } = UserUpdated._doc
     res
@@ -114,5 +117,52 @@ export const Delete = async (req, res, next) => {
       .json({ success: true, message: "User Deleted Success Full" })
   } catch (e) {
     console.log(`Error While Delete User :${e}`)
+  }
+}
+
+export const googleAuth = async (req, res, next) => {
+  try {
+    const { name, email, profilePic } = req.body
+    const existUser = await User.findOne({ email })
+    if (existUser) {
+      const token = jwt.sign({ _id: existUser._id }, process.env.SECRET_KEY, {
+        expiresIn: "1d",
+      })
+
+      const { password, ...rest } = existUser._doc
+
+      return res
+        .cookie("token", token, {
+          httpOnly: true,
+          maxAge: 24 * 60 * 60 * 1000,
+        })
+        .status(200)
+        .json(rest)
+    }
+    console.log("this is a req body", req.body)
+    const password = Math.floor(Math.random() * 8000000 + 8000000).toString()
+    const bcryptjsPassword = bcryptjs.hashSync(password, 10)
+
+    const user = await User.create({
+      name,
+      email,
+      profilePic,
+      password: bcryptjsPassword,
+    })
+
+    const token = jwt.sign({ _id: user._id }, process.env.SECRET_KEY, {
+      expiresIn: "1d",
+    })
+
+    const { password: abc, ...rest } = user._doc
+
+    res
+      .cookie("token", token, { httpOnly: true, maxAge: 24 * 60 * 60 * 1000 })
+      .status(200)
+      .json(rest)
+
+    console.log(req.body)
+  } catch (e) {
+    console.log(`Error While google Auth :${e}`)
   }
 }

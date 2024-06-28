@@ -6,10 +6,10 @@ import { errorMiddleware } from "./Middlewares/error.middlewares.js"
 import router from "./routers/user.routes.js"
 config({ path: "./config/.env" })
 const app = express()
+DatabaseConnection()
 
 // Middlewares //
 app.use(express.json())
-DatabaseConnection()
 app.use(cookieParser())
 // Routers //
 
