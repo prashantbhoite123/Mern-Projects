@@ -32,11 +32,11 @@ function GoogleAuthBtn() {
     const data = await res.json()
     if (data.success === false) {
       toast.error(data.message)
-      throw new Error()
       dispatch(fetchEnd())
+      throw new Error()
     }
     dispatch(fetchSuccess(data))
-    toast.success(data.message)
+    toast.success(`Welcome ${user.displayName}`)
     navigate("/")
   }
   return (

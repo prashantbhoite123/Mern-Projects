@@ -1,5 +1,6 @@
 import React, { useState } from "react"
 import { Link, json } from "react-router-dom"
+import GoogleAuthBtn from "../Components/GoogleAuthBtn"
 import { fetchStart, fetchEnd, fetchSuccess } from "../App/Feature/TodoSlice"
 import { useDispatch, useSelector } from "react-redux"
 import { useNavigate } from "react-router-dom"
@@ -95,7 +96,7 @@ function SignIn() {
               {loading ? `LOADING...` : `Sign in`}
             </button>
           </div>
-
+          <GoogleAuthBtn />
           <hr />
         </form>
 

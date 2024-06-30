@@ -19,7 +19,7 @@ function App() {
       <Router>
         <Header />
         <Routes>
-          <Route path="/sing-in" element={<SignIn />} />
+          <Route path="/sign-in" element={<SignIn />} />
           <Route path="/sign-up" element={<SignUp />} />
           <Route element={<ProtectRouter />}>
             <Route path="/" element={<Home />} />

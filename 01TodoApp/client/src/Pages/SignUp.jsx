@@ -8,9 +8,9 @@ import GoogleAuthBtn from "../Components/GoogleAuthBtn"
 
 function SignUp() {
   const navigate = useNavigate()
-  const dispatch = useDispatch()
-  const { loading } = useSelector((state) => state.user)
+
   const [fromData, setFromData] = useState("")
+  const [loading, setloading] = useState(false)
   console.log(fromData)
   const handleChange = (e) => {
     setFromData({ ...fromData, [e.target.name]: e.target.value })
@@ -18,7 +18,7 @@ function SignUp() {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    dispatch(fetchStart())
+    setloading(true)
     try {
       const res = await fetch("/api/user/register", {
         method: "POST",
@@ -30,16 +30,18 @@ function SignUp() {
       const data = await res.json()
       if (data.success === false) {
         toast.error(data.messgae)
-        throw new Error()
-        dispatch(fetchEnd())
+        setloading(false)
+        throw new Error(data.message)
       }
       toast.success(data.message)
+      setloading(false)
       navigate("/sing-in")
+      // window.location.reload()
     } catch (e) {
       toast.error(e.message)
     }
   }
-  
+
   return (
     <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
