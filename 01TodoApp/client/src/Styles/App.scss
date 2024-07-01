@@ -6,4 +6,14 @@
     #c850c0 46%,
     #ffcc70 100%
   );
+  width: 100%;
+  overflow: hidden;
+  scrollbar-width: none;
+  height: 100vh;
+}
+
+.todoitem {
+  overflow: wrap;
+  // position: fixed;
+  background-color: red;
 }

@@ -8,7 +8,6 @@ function Home() {
     e.preventDefault()
 
     try {
-      
       const res = await fetch("/api/task/addTask", {
         method: "POST",
         headers: {
@@ -18,7 +17,7 @@ function Home() {
         body: JSON.stringify({ tittle: input }),
       })
       const data = await res.json()
-      console.log(data)
+
       if (data.success === false) {
         toast.error(data.message)
         throw new Error(data.message)
@@ -30,7 +29,7 @@ function Home() {
     }
   }
   return (
-    <div className="flex justify-center items-center px-40 w-full my-32 py-2">
+    <div className="flex justify-center items-center px-40 w-full h-[100%] my-32 py-2">
       <form className="flex" onSubmit={handleSubmit}>
         <input
           autoFocus

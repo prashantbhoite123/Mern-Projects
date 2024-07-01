@@ -1,3 +1,4 @@
+import { errorHandler } from "../Utils/errorHandler.js"
 import { Task } from "../models/Task.js"
 export const addTask = async (req, res, next) => {
   try {
@@ -24,28 +25,46 @@ export const getallTodo = async (req, res, next) => {
   }
 }
 
-export const deleteTodo = async (req, res) => {
+export const deleteTodo = async (req, res, next) => {
+  console.log(req.params.id)
   try {
-    const id = req.params.id
-    const { tittle } = req.body
-    const validTodo = await Task.findOne({ tittle })
-    // const existTodo = await Task.findById(id)
-    const Thisdelete = await Task.findByIdAndDelete(id)
-    console.log(Thisdelete)
+    const { id } = req.params
+    const existTodo = await Task.findById(id)
 
+    await Task.findByIdAndDelete(existTodo._id)
     res.status(200).json({ success: true, message: "Task Delete Successfull" })
   } catch (e) {
     console.log(`Error While DeleteTodo :${e}`)
   }
 }
 
-export const editTodo = async (req, res) => {
+export const editTodo = async (req, res, next) => {
   try {
     const { id } = req.params
-    // const findtodo = await Task.findById(id)
+    console.log("this is is", id)
+    if (!id) {
+      return next(errorHandler(400, "Invalid id"))
+    }
+    
+    const update = await Task.findByIdAndUpdate(id, {
+      $set: {
+        tittle: req.body.tittle,
+      },
+    })
 
-    console.log(validTodo)
+    console.log(update)
+    res.status(200).json({ success: true, message: "Todo Update Success" })
   } catch (e) {
     console.log(`Error While editTodo :${e}`)
   }
+}
+
+export const toggleTodo = async (req, res, next) => {
+  const { id } = req.params
+  const toggle = await Task.findById(id)
+
+  toggle.isComplete = !toggle.isComplete
+  toggle.save()
+  console.log(toggle)
+  res.status(200).json({ success: true, message: "task togle" })
 }

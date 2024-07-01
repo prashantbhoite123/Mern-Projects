@@ -14,21 +14,28 @@ function Task() {
       .then((res) => res.json())
       .then((data) => settodoarr(data.allTask))
       .catch((err) => console.log(`Error:`, err))
-  }, [])
+  }, [todoarr])
 
-  // todoarr.map((todo) => {
-  //   console.log(todo)
-  // })
-  console.log(todoarr)
   return (
     <>
-      <div className="todo-container ">
-        <div className="flex flex-col justify-center items-center m-auto">
-          {todoarr.map((todo) => (
-            <TodoItem todo={todo} />
-          ))}
+      {todoarr.length !== 0 ? (
+        <div className="todo-container">
+          <div className="flex flex-col justify-center items-center m-auto">
+            {todoarr.map((todo) => (
+              <div key={todo._id}>
+                <TodoItem todo={todo} />
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
+      ) : (
+        <div className="text-black text-4xl flex justify-center">
+          <img
+            src="https://cdn3d.iconscout.com/3d/premium/thumb/businessman-saying-no-4637841-3864087.png?f=webp"
+            alt=""
+          />
+        </div>
+      )}
     </>
   )
 }

@@ -12,6 +12,7 @@ import SignIn from "./Pages/SignIn"
 import Task from "./Pages/Task"
 import Profile from "./Pages/Profile"
 import ProtectRouter from "./Components/ProtectRouter"
+import Footer from "./Components/Footer"
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
           </Route>
           <Route path="*" element={<Navigate to={"/"} />} />
         </Routes>
+        <Footer />
       </Router>
     </>
   )
