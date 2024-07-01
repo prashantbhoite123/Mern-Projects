@@ -6,30 +6,33 @@ function Home() {
   console.log(input)
   const handleSubmit = async (e) => {
     e.preventDefault()
+    if (input.trim() === "") {
+      toast.error("Enter Valid Input")
+    } else {
+      try {
+        const res = await fetch("/api/task/addTask", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+          body: JSON.stringify({ tittle: input }),
+        })
+        const data = await res.json()
 
-    try {
-      const res = await fetch("/api/task/addTask", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify({ tittle: input }),
-      })
-      const data = await res.json()
-
-      if (data.success === false) {
-        toast.error(data.message)
-        throw new Error(data.message)
+        if (data.success === false) {
+          toast.error(data.message)
+          throw new Error(data.message)
+        }
+        toast.success(data.message)
+        setInput("")
+      } catch (e) {
+        toast.error(e.message)
       }
-      toast.success(data.message)
-      setInput("")
-    } catch (e) {
-      toast.error(e.message)
     }
   }
   return (
-    <div className="flex justify-center items-center px-40 w-full h-[100%] my-32 py-2">
+    <div className="flex justify-center items-center px-40 w-full bg-gray-300 h-[75vh] py-2">
       <form className="flex" onSubmit={handleSubmit}>
         <input
           autoFocus
@@ -37,7 +40,7 @@ function Home() {
           onChange={(e) => setInput(e.target.value)}
           type="text"
           placeholder="Write Todo..."
-          className=" border border-black/10 bg-gray-500 text-black font-semibold rounded-l-lg  min-w-96  px-40 outline-none duration-150 bg-white/20 py-2"
+          className=" border w-full text-black font-semibold rounded-l-lg  min-w-96 px-5 outline-none duration-150 bg-white/20 "
         />
         <button
           type="submit"

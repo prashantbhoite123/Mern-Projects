@@ -35,24 +35,28 @@ function TodoItem({ todo }) {
   }
 
   const handelEdit = async () => {
-    try {
-      const res = await fetch(`/api/task/editTodo/${todo._id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify({ tittle: editTodo }),
-      })
-      const data = await res.json()
-      setTogglecomplete(false)
+    if (editTodo.trim() !== "") {
+      try {
+        const res = await fetch(`/api/task/editTodo/${todo._id}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+          body: JSON.stringify({ tittle: editTodo }),
+        })
+        const data = await res.json()
+        setTogglecomplete(false)
 
-      if (data.success === false) {
-        throw new Error(data.message)
+        if (data.success === false) {
+          throw new Error(data.message)
+        }
+        toast.success(data.message)
+      } catch (e) {
+        toast.error(e.message)
       }
-      toast.success(data.message)
-    } catch (e) {
-      toast.error(e.message)
+    } else {
+      toast.error("Enter Valid input")
     }
   }
 
@@ -66,7 +70,11 @@ function TodoItem({ todo }) {
       toast.error(data.message)
       throw new Error()
     }
-    toast.success(data.message)
+    if (!todo.isComplete) {
+      toast.success(data.message)
+    } else {
+      toast.error("Cancel")
+    }
   }
 
   return (

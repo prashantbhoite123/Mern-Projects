@@ -19,8 +19,8 @@ function Task() {
   return (
     <>
       {todoarr.length !== 0 ? (
-        <div className="todo-container">
-          <div className="flex flex-col justify-center items-center m-auto">
+        <div className="todo-container h-[75vh] overflow-scroll overflow-x-hidden bg-gray-600">
+          <div className="flex flex-col justify-center items-center">
             {todoarr.map((todo) => (
               <div key={todo._id}>
                 <TodoItem todo={todo} />
@@ -29,8 +29,9 @@ function Task() {
           </div>
         </div>
       ) : (
-        <div className="text-black text-4xl flex justify-center">
+        <div className="text-black flex justify-center items-center h-[75vh] bg-gray-300">
           <img
+            className="w-[40vh] h-[40vh]"
             src="https://cdn3d.iconscout.com/3d/premium/thumb/businessman-saying-no-4637841-3864087.png?f=webp"
             alt=""
           />

@@ -7,8 +7,10 @@ import { useSelector } from "react-redux"
 function Header() {
   const { currentUser } = useSelector((state) => state.user)
   return (
-    <div className="flex justify-between items-center bg-pink-600 w-full">
-      <div className="navlogo font-bold text-xl px-2">Task Manager</div>
+    <div className="flex text-white justify-between gap-x-2 items-center bg-pink-600 w-full">
+      <div className="navlogo font-bold text-2xl text-white px-2">
+        Task Manager
+      </div>
       <div className="navitems flex font-bold">
         <Link to={"/"}>
           <li>Home</li>
@@ -17,7 +19,7 @@ function Header() {
           <li>Task</li>
         </Link>
         {currentUser ? (
-          <Link to={"/profile"}>
+          <Link to={"/profile"} className="mx-3">
             <img
               src={currentUser.profilePic}
               alt=""

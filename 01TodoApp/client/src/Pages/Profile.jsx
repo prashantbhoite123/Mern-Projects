@@ -61,7 +61,6 @@ function Profile() {
   const handelUpdate = async (e) => {
     e.preventDefault()
     dispatch(fetchStart())
-
     try {
       const res = await fetch(`/api/user/update/${currentUser._id}`, {
         method: "PUT",
@@ -80,14 +79,13 @@ function Profile() {
       }
       dispatch(UpdateSuccess(data.rest))
       dispatch(fetchEnd())
-      console.log("ok")
     } catch (e) {
       toast.error(e.message)
     }
   }
 
   return (
-    <>
+    <div className="bg-gray-700 h-full">
       {istodoEdatable ? (
         <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
           <div className="sm:mx-auto sm:w-full sm:max-w-sm">
@@ -144,6 +142,7 @@ function Profile() {
             </form>
             <div>
               <button
+                onClick={() => setTodoEditable(false)}
                 //   disabled={loading}
                 type="button"
                 className="flex w-full justify-center rounded-md bg-red-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-green-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-600 disabled:bg-green-400 disabled:cursor-not-allowed"
@@ -222,7 +221,7 @@ function Profile() {
           </div>
         </div>
       )}
-    </>
+    </div>
   )
 }
 
