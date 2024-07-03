@@ -1,6 +1,7 @@
 import React, { useState } from "react"
 import { Link } from "react-router-dom"
 import { toast } from "react-hot-toast"
+import { useNavigate } from "react-router-dom"
 import {
   FormControl,
   FormLabel,
@@ -10,17 +11,40 @@ import {
   Box,
   VStack,
 } from "@chakra-ui/react"
+import GoogleAuthBtn from "../components/GoogleAuthBtn"
 
 function SignUp() {
+  const navigate = useNavigate()
   const [loading, setloading] = useState(false)
-  const [fromdata, setFromData] = useState("")
-
+  const [fromdata, setFromData] = useState([])
   const handelChange = (e) => {
     setFromData({ ...fromdata, [e.target.name]: e.target.value })
   }
-  const handelSubmit = async () => {
+  console.log(fromdata)
+  const handelSubmit = async (e) => {
+    e.preventDefault()
+    setloading(true)
     try {
-      const res= await fetch()
+      const res = await fetch("/api/user/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify(fromdata),
+      })
+      const data = await res.json()
+      if (data.success === false) {
+        toast.error(data.message)
+        setloading(false)
+        throw new Error()
+      }
+
+      toast.success(data.message)
+      setloading(false)
+      navigate("/sign-in")
+
+      console.log(data)
     } catch (e) {
       toast.error(e.message)
     }
@@ -54,7 +78,9 @@ function SignUp() {
             <Input
               onChange={handelChange}
               type="text"
-              placeContent="Enter Your Name"
+              value={fromdata.name}
+              name="name"
+              placeholder="Enter Your Name"
             />
           </FormControl>
 
@@ -62,17 +88,22 @@ function SignUp() {
             <FormLabel>Email</FormLabel>
             <Input
               onChange={handelChange}
-              type="text"
-              placeContent="Enter Your Email"
+              type="email"
+              value={fromdata.email}
+              name="email"
+              placeholder="Enter Your Email"
             />
           </FormControl>
 
           <FormControl width={"100%"} isRequired>
             <FormLabel>Password</FormLabel>
             <Input
+              color={"white"}
               onChange={handelChange}
-              type="text"
-              placeContent="Enter Your Password"
+              type="password"
+              value={fromdata.password}
+              name="password"
+              placeholder={"Enter Your Password"}
             />
           </FormControl>
 
@@ -82,11 +113,11 @@ function SignUp() {
             mt={"5"}
             justifyContent={"center"}
           >
-            <Button type="submit" w={"full"}>
-              Sign Up
+            <Button disabled={loading} type="submit" w={"full"}>
+              {loading ? "Loading.." : "Sign-Up"}
             </Button>
           </FormControl>
-
+          <GoogleAuthBtn />
           <FormControl width={"100%"} color="blue">
             <Link mx={"40"} to={"/sign-in"}>
               Sign in

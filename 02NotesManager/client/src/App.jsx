@@ -5,6 +5,8 @@ import SignUp from "./Pages/SignUp"
 import Header from "./components/Header"
 import RecycleBin from "./Pages/RecycleBin"
 import SignIn from "./Pages/SignIn"
+import Profile from "./Pages/Profile"
+import ProtectRouter from "./components/ProtectRouter"
 
 function App() {
   return (
@@ -12,10 +14,13 @@ function App() {
       <Router>
         <Header />
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route element={<ProtectRouter />}>
+            <Route path="/" element={<Home />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/recycle-bin" element={<RecycleBin />} />
+          </Route>
           <Route path="/sign-up" element={<SignUp />} />
           <Route path="/sign-in" element={<SignIn />} />
-          <Route path="/recycle-bin" element={<RecycleBin />} />
         </Routes>
       </Router>
     </>

@@ -37,10 +37,13 @@ export const Login = async (req, res, next) => {
     if (!ismatchPassword) {
       return next(errorHandler(400, "Invalid email or Password"))
     }
+
+    const { password: abc, ...rest } = existuser._doc
+
     const token = jwt.sign({ _id: existuser._id }, process.env.SECRETKEY)
     res
       .cookie("token", token, { httpOnly: true, maxAge: 24 * 60 * 60 * 1000 })
-      .json({ success: false, message: "User Login SuccessFull" })
+      .json({ success: true, message: "User Login SuccessFull", rest })
   } catch (e) {
     console.log(`Error While Login User :${e}`)
   }
@@ -61,7 +64,7 @@ export const Logout = (req, res) => {
   res
     .clearCookie("token")
     .status(200)
-    .json({ success: true, messgae: "User logout successfull " })
+    .json({ success: true, message: "User logout successfull " })
 }
 
 export const Delete = async (req, res) => {
@@ -74,7 +77,7 @@ export const Delete = async (req, res) => {
     .json({ success: true, message: "Usere Deleted Successfull" })
 }
 
-export const Update = async (req, res) => {
+export const Update = async (req, res, next) => {
   try {
     if (req.body.email) {
       const existEmail = await User.findOne({ email: req.body.email })
@@ -102,8 +105,55 @@ export const Update = async (req, res) => {
     const { password, ...rest } = userUpdate._doc
     res
       .status(200)
-      .json({ success: true, messgae: "User Update successFull", rest })
+      .json({ success: true, message: "User Update successFull", rest })
   } catch (e) {
     console.log(`Error While Update Api :${e}`)
+  }
+}
+
+export const googleAuth = async (req, res, next) => {
+  try {
+    const { name, email, profilepic } = req.body
+    const existUser = await User.findOne({ email })
+    if (existUser) {
+      const token = jwt.sign({ _id: existUser._id }, process.env.SECRETKEY, {
+        expiresIn: "1d",
+      })
+
+      const { password, ...rest } = existUser._doc
+
+      return res
+        .cookie("token", token, {
+          httpOnly: true,
+          maxAge: 24 * 60 * 60 * 1000,
+        })
+        .status(200)
+        .json(rest)
+    }
+    const password = Math.floor(
+      Math.random() * 8000000000 + 8000000000
+    ).toString()
+    const bcryptjsPassword = bcryptjs.hashSync(password, 10)
+
+    const user = await User.create({
+      name,
+      email,
+      profilepic,
+      password: bcryptjsPassword,
+    })
+
+    const { password: abc, ...rest } = user._doc
+    const token = jwt.sign({ _id: existUser._id }, process.env.SECRETKEY, {
+      expiresIn: "1d",
+    })
+
+    return (
+      res,
+      cookie("token", token, { httpOnly: true, maxAge: 24 * 60 * 60 * 1000 })
+        .status(200)
+        .json(rest)
+    )
+  } catch (e) {
+    console.log(`Error While GoogleAuth APi :${e}`)
   }
 }

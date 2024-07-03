@@ -12,12 +12,16 @@ import {
   Stack,
   VStack,
   HStack,
+  Img,
 } from "@chakra-ui/react"
 
+import { useSelector } from "react-redux"
 import { Link } from "react-router-dom"
 import { BiMenuAltLeft } from "react-icons/bi"
 
 function Header() {
+  const { currentUser } = useSelector((state) => state.user)
+  console.log("This is a currentUser", currentUser)
   const { isOpen, onOpen, onClose } = useDisclosure()
   return (
     <>
@@ -39,23 +43,49 @@ function Header() {
         <DrawerOverlay />
         <DrawerContent>
           <DrawerCloseButton />
-          <DrawerHeader>Notes Maganer</DrawerHeader>
+          <DrawerHeader>
+            {currentUser ? (
+              <Link className="flex" onClick={onClose} to={"/profile"}>
+                <Img
+                  w={"10"}
+                  borderRadius={"full"}
+                  src={currentUser.profilepic}
+                />
+                <h1 className="mx-6 font-semibold text-2xl text-white">
+                  Prashant Bhoite
+                </h1>
+              </Link>
+            ) : (
+              <Link className="flex" to={"/sign-in"}>
+                <Img
+                  w={"10"}
+                  borderRadius={"full"}
+                  src={
+                    "https://static.vecteezy.com/system/resources/previews/005/544/718/non_2x/profile-icon-design-free-vector.jpg"
+                  }
+                />
+                <h1 className="mx-6 font-semibold text-2xl text-white">
+                  Prashant Bhoite
+                </h1>
+              </Link>
+            )}
+          </DrawerHeader>
           <DrawerBody>
             <VStack alignItems={"flex-start"}>
-              <Button variant={"ghost"}>
+              <Button onClick={onClose} variant={"ghost"}>
                 <Link to={"/"}>Home</Link>
               </Button>
 
-              <Button variant={"ghost"}>
+              <Button onClick={onClose} variant={"ghost"}>
                 <Link to={"/"}>Tasks</Link>
               </Button>
 
-              <Button variant={"ghost"}>
+              <Button onClick={onClose} variant={"ghost"}>
                 <Link to={"/recycle-bin"}>Recycle bin</Link>
               </Button>
             </VStack>
             <HStack pos={"absolute"} left={"5"} bottom={"10"}>
-              <Button variant={"outline"}>
+              <Button onClick={onClose} variant={"outline"}>
                 <Link to={"/sign-Up"}>Sign Up</Link>
               </Button>
             </HStack>
