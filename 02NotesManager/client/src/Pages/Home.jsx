@@ -1,8 +1,7 @@
 import React from "react"
 
-
 function Home() {
-  return <div>home</div>
+  return <div className="flex justify-center text-4xl">home</div>
 }
 
 export default Home

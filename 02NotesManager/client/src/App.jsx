@@ -7,6 +7,7 @@ import RecycleBin from "./Pages/RecycleBin"
 import SignIn from "./Pages/SignIn"
 import Profile from "./Pages/Profile"
 import ProtectRouter from "./components/ProtectRouter"
+import AllNotes from "./Pages/AllNotes"
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/recycle-bin" element={<RecycleBin />} />
+            <Route path="/all-note" element={<AllNotes />} />
           </Route>
           <Route path="/sign-up" element={<SignUp />} />
           <Route path="/sign-in" element={<SignIn />} />

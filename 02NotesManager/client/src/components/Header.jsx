@@ -51,8 +51,8 @@ function Header() {
                   borderRadius={"full"}
                   src={currentUser.profilepic}
                 />
-                <h1 className="mx-6 font-semibold text-2xl text-white">
-                  Prashant Bhoite
+                <h1 className="mx-6 font-bold  text-2xl text-red-300 ">
+                  REAL THINKAR
                 </h1>
               </Link>
             ) : (
@@ -64,8 +64,8 @@ function Header() {
                     "https://static.vecteezy.com/system/resources/previews/005/544/718/non_2x/profile-icon-design-free-vector.jpg"
                   }
                 />
-                <h1 className="mx-6 font-semibold text-2xl text-white">
-                  Prashant Bhoite
+                <h1 className="mx-6 font-bold  text-2xl text-red-300 ">
+                  REAL THINKAR
                 </h1>
               </Link>
             )}
@@ -77,7 +77,7 @@ function Header() {
               </Button>
 
               <Button onClick={onClose} variant={"ghost"}>
-                <Link to={"/"}>Tasks</Link>
+                <Link to={"/all-note"}>All Notes</Link>
               </Button>
 
               <Button onClick={onClose} variant={"ghost"}>
