@@ -19,7 +19,7 @@ export const getallTodo = async (req, res, next) => {
 
     const allTask = await Task.find({ user })
     console.log(allTask)
-    res.status(200).json({ allTask })
+    res.status(200).json({ allTask})
   } catch (e) {
     console.log(`  While getallTodo :${e}`)
   }

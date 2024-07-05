@@ -16,7 +16,7 @@ app.use(cookieParser())
 
 // Routers //
 app.use("/api/user", router)
-app.use("/api/notes", notesRoute)
+app.use("/api/thinks", notesRoute)
 // server //
 app.use(errorMiddleware)
 app.listen(process.env.PORT, () => {
