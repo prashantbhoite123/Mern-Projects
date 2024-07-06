@@ -20,6 +20,8 @@ import {
 import { CgAdd } from "react-icons/cg"
 import { useEffect } from "react"
 import Task from "../components/Task"
+import SelectAndDelete from "../components/SelectAndDelete"
+// import EditModel from "../components/EditModel"
 function AllNotes() {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const initialRef = React.useRef(null)
@@ -27,7 +29,7 @@ function AllNotes() {
 
   const [notes, setNotes] = useState([])
   const [todos, setTodos] = useState([])
-  console.log(todos)
+  // console.log(todos)
 
   // console.log(notes)
   const handelChange = (e) => {
@@ -36,7 +38,6 @@ function AllNotes() {
 
   const handelNotesApi = async (e) => {
     e.preventDefault()
-
     try {
       if (notes.title.trim() === "") {
         toast.error("Enter Your Tak here ..")
@@ -77,16 +78,21 @@ function AllNotes() {
       .then((data) => setTodos(data))
       .catch((e) => console.log(`Error ${e}`))
   }, [todos])
-  console.log(todos)
+  // console.log(todos)
   return (
     <>
       <div className="flex justify-center text-4xl">All Notes</div>
+      <SelectAndDelete />
       <Box mt={"10"}>
         <Button
+          variant={"none"}
           onClick={onOpen}
           color={"white"}
           fontSize={"50"}
           borderRadius={"100%"}
+          background={"none"}
+          pos={"fixed"}
+          zIndex={"1"}
         >
           <CgAdd />
         </Button>
@@ -136,6 +142,14 @@ function AllNotes() {
           </ModalFooter>
         </ModalContent>
       </Modal>
+
+      <Box display={"flex"} justifyContent={"space-evenly"} flexWrap={"wrap"}>
+        {todos.map((todo, index) => (
+          <div className="w-[24rem] mx-4  mt-7 " key={index}>
+            <Task todos={todo} />
+          </div>
+        ))}
+      </Box>
     </>
   )
 }

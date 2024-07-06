@@ -1,6 +1,6 @@
 import React from "react"
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom"
-import Home from "./Pages/Home"
+
 import SignUp from "./Pages/SignUp"
 import Header from "./components/Header"
 import RecycleBin from "./Pages/RecycleBin"
@@ -15,14 +15,13 @@ function App() {
       <Router>
         <Header />
         <Routes>
-          <Route element={<ProtectRouter />}>
-            <Route path="/" element={<Home />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/recycle-bin" element={<RecycleBin />} />
-            <Route path="/all-note" element={<AllNotes />} />
-          </Route>
           <Route path="/sign-up" element={<SignUp />} />
           <Route path="/sign-in" element={<SignIn />} />
+          <Route element={<ProtectRouter />}>
+            <Route path="/profile" element={<Profile />} />
+            <Route path="/recycle-bin" element={<RecycleBin />} />
+            <Route path="/" element={<AllNotes />} />
+          </Route>
         </Routes>
       </Router>
     </>
