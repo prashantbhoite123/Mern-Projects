@@ -1,5 +1,7 @@
 import React, { useState } from "react"
 import { toast } from "react-hot-toast"
+import { useSelector, useDispatch } from "react-redux"
+
 import {
   Card,
   CardHeader,
@@ -25,17 +27,23 @@ import {
 } from "@chakra-ui/react"
 
 import { MdDelete } from "react-icons/md"
-import { FaEdit } from "react-icons/fa"
+import { FaEdit, FaRoad } from "react-icons/fa"
+
+
 function Task({ todos }) {
-  // console.log(todos)
+
+  const { deleteToggle } = useSelector((state) => state.user)
 
   const { isOpen, onOpen, onClose } = useDisclosure()
   const initialRef = React.useRef(null)
   const finalRef = React.useRef(null)
 
   const [update, setUpdate] = useState([])
-  // console.log(update)
+  const [setdelete, setnewdelete] = useState(false)
 
+  const [multipaledelete, setMultipaldelete] = useState([])
+
+  console.log(multipaledelete)
   const handelChange = (e) => {
     setUpdate({ ...update, [e.target.name]: e.target.value })
   }
@@ -54,6 +62,7 @@ function Task({ todos }) {
         }),
       })
       const data = await res.json()
+      setnewdelete(data.notesUpdated)
       if (data.success === false) {
         toast.error(data.message)
         throw new Error()
@@ -65,11 +74,9 @@ function Task({ todos }) {
       toast.error(`error while update:${e}`)
     }
   }
+
   return (
     <>
-      
-
-      
       <SimpleGrid
         spacing={4}
         templateColumns="repeat(auto-fill, minmax(200px, 1fr))"
@@ -83,9 +90,19 @@ function Task({ todos }) {
             height={"10"}
             bg={"grey"}
           >
-            <Button onClick={onOpen} type="button" outline={"none"}>
-              <FaEdit />
-            </Button>
+            {deleteToggle ? (
+              <input
+                type="checkbox"
+                w={"20"}
+                name="checkbox"
+                defaultChecked={setdelete.isComplete}
+                onChange={() => setMultipaldelete(todos._id)}
+              />
+            ) : (
+              <Button onClick={onOpen} type="button" outline={"none"}>
+                <FaEdit />
+              </Button>
+            )}
           </CardHeader>
           <CardHeader>
             <Heading size="md">{todos.title} </Heading>
@@ -150,32 +167,3 @@ function Task({ todos }) {
 }
 
 export default Task
-
-/*
-<SimpleGrid spacing={4} templateColumns='repeat(auto-fill, minmax(200px, 1fr))'>  
-<Card>
-   <CardHeader
-          display={"flex"}
-          justifyContent={"end"}
-          alignItems={"center"}
-          w={"full"}
-          height={"10"}
-          bg={"grey"}
-        >
-          <Button onClick={onOpen} type="button" outline={"none"}>
-            <FaEdit />
-          </Button>
-        </CardHeader>
-    <CardHeader>
-      <Heading size='md'>{todos.title} </Heading>
-    </CardHeader>
-    <CardBody>
-      <FormLabel color={"yellow"}>Description</FormLabel>
-      <Text>{todos.description}</Text>
-    </CardBody>
-    <CardFooter>
-      <Button>View here</Button>
-    </CardFooter>
-  </Card>
-  </SimpleGrid>
-  */
