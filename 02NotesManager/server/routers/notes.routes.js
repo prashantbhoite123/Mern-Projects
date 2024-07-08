@@ -2,9 +2,11 @@ import express from "express"
 import { isAuthentication } from "../middlewares/Auth.middleware.js"
 import {
   deleteNotes,
+  deletenotesandStoreResycalBin,
   getallnotes,
   Notescreate,
   searchNote,
+  singleFDelete,
   updateNotes,
 } from "../controllers/notes.controllers.js"
 
@@ -15,6 +17,12 @@ notesRoute.get("/getAllNote", isAuthentication, getallnotes)
 notesRoute.put("/updateNote/:id", isAuthentication, updateNotes)
 notesRoute.delete("/deleteNote/:id", isAuthentication, deleteNotes)
 notesRoute.get("/searchNote", isAuthentication, searchNote)
-notesRoute.delete("/multipaldelnotes", isAuthentication, deleteNotes)
-
+notesRoute.post("/multipaldelnotes", isAuthentication, deleteNotes)
+notesRoute.get("/resycal", isAuthentication, deleteNotes)
+notesRoute.delete("/deleteNote/:id", isAuthentication, singleFDelete)
+notesRoute.post(
+  "/deleteAndSroreRebin",
+  isAuthentication,
+  deletenotesandStoreResycalBin
+)
 export default notesRoute

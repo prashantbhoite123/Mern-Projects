@@ -2,6 +2,7 @@ import React, { useState } from "react"
 import { toast } from "react-hot-toast"
 import { useSelector, useDispatch } from "react-redux"
 import { toggleDelete } from "../App/Feature/userSlice"
+import { restorenots } from "../App/Feature/restore"
 import {
   Modal,
   ModalOverlay,
@@ -30,16 +31,16 @@ function AllNotes() {
   const dispatch = useDispatch()
   const { deleteToggle } = useSelector((state) => state.user)
 
- 
   const { isOpen, onOpen, onClose } = useDisclosure()
   const initialRef = React.useRef(null)
   const finalRef = React.useRef(null)
 
   const [notes, setNotes] = useState([])
+
   const [todos, setTodos] = useState([])
   const [search, setSearch] = useState("")
   const [searchval, setSearchVal] = useState([]) // Rename state to setSearchVal for clarity
-
+  const [selectedNotes, setSelectedNotes] = useState([])
   const handelChange = (e) => {
     setNotes({ ...notes, [e.target.name]: e.target.value })
   }
@@ -83,7 +84,7 @@ function AllNotes() {
       .catch((error) => {
         console.log(`Error fetching notes: ${error}`)
       })
-  }, [todos, searchval])
+  }, [todos, searchval, search, notes])
 
   const handelSearch = async (e) => {
     e.preventDefault()
@@ -106,7 +107,6 @@ function AllNotes() {
 
       const data = await res.json()
       if (Array.isArray(data) && data.length === 0) {
-        // Handle case where no results are found
         toast.error("No notes found with that title")
         setSearchVal([])
       } else {
@@ -117,22 +117,49 @@ function AllNotes() {
     }
   }
 
+  // const handeldelete = async () => {
+  //   try {
+  //     const res = await fetch("/api/thinks/multipaldelnotes", {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       credentials: "include",
+  //       body: JSON.stringify({ ids: selectedNotes }),
+  //     })
+  //     const data = await res.json()
+  //     console.log("this is delete data",data)
+  //     dispatch(toggleDelete())
+  //   } catch (e) {
+  //     toast.error(e.message)
+  //   }
+  // }
+
   const handeldelete = async () => {
     try {
-      const res = await fetch("/api/thinks/multipaldelnotes", {
-        method: "DELETE",
+      const res = await fetch("/api/thinks/deleteAndSroreRebin", {
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         credentials: "include",
-        body: JSON.stringify(),
+        body: JSON.stringify({ ids: selectedNotes }),
       })
       const data = await res.json()
-      console.log(data)
+      console.log("this is delete data", data)
+      dispatch(restorenots(data.allres))
       dispatch(toggleDelete())
     } catch (e) {
       toast.error(e.message)
     }
+  }
+
+  const toggleSelectNote = (noteId) => {
+    setSelectedNotes((prevSelected) =>
+      prevSelected.includes(noteId)
+        ? prevSelected.filter((id) => id !== noteId)
+        : [...prevSelected, noteId]
+    )
   }
   return (
     <>
@@ -239,12 +266,20 @@ function AllNotes() {
         {searchval.length > 0
           ? searchval.map((todo, index) => (
               <div className="w-[24rem] mx-4 mt-7" key={index}>
-                <Task todos={todo} />
+                <Task
+                  todos={todo}
+                  toggleSelectNote={toggleSelectNote}
+                  isSelected={selectedNotes.includes(todo._id)}
+                />
               </div>
             ))
           : todos.map((todo, index) => (
               <div className="w-[24rem] mx-4 mt-7" key={index}>
-                <Task todos={todo} />
+                <Task
+                  todos={todo}
+                  toggleSelectNote={toggleSelectNote}
+                  isSelected={selectedNotes.includes(todo._id)}
+                />
               </div>
             ))}
       </Box>

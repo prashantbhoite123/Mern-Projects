@@ -52,18 +52,32 @@ export const updateNotes = async (req, res, next) => {
 
 export const deleteNotes = async (req, res) => {
   try {
-    const { deleteArr } = req.body
-    if (!Array.isArray(deleteArr) || deleteArr.length === 0) {
+    const { ids } = req.body
+    if (!Array.isArray(ids) || ids.length === 0) {
       return res.status(200).json({ message: "invalid requist" })
     }
 
-    const objectIds = deleteArr.map((id) => new mongoose.Types.objectIds(id))
+    // const objectIds = ids.map((id) => new mongoose.Types.objectIds(id))
 
-    await Notes.deleteMany({ _id: { $in: objectIds } })
-    res.status(200).json({ message: `${deleteArr.length} notes deleted` })
+    const result = await Notes.deleteMany({ _id: { $in: ids } })
+
+    if (result.deletedCount === 0) {
+      return res.status(404).json({ success: false, message: "No notes found" })
+    }
+
+    res.status(200).json({ message: `${ids.length} notes deleted`, result })
   } catch (e) {
     console.log(`Error While deleteNote :${e}`)
   }
+}
+
+export const singleFDelete = async () => {
+  const { id } = req.params
+  if (!id) {
+    return next(errorHandler(400, "Id not found"))
+  }
+  await Notes.findByIdAndDelete(id)
+  res.status(200).json({ success: true, message: "Notes Deleted " })
 }
 
 export const searchNote = async (req, res, next) => {
@@ -89,5 +103,32 @@ export const searchNote = async (req, res, next) => {
     res.status(200).json(searchNote)
   } catch (e) {
     console.log(`Error While search Api ${e}`)
+  }
+}
+
+export const deletenotesandStoreResycalBin = async (req, res, next) => {
+  try {
+    const { ids } = req.body
+    if (!ids || !Array.isArray(ids)) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid responce" })
+    }
+
+    const allres = await Notes.find({ _id: ids })
+    console.log(allres)
+
+    const result = await Notes.updateMany(
+      { _id: { $in: ids } },
+      { $set: { isComplete: true } }
+    )
+    if (result.length === 0) {
+      return next(errorHandler(400, "No Notes Found"))
+    }
+    res
+      .status(200)
+      .json({ success: true, message: "Notes moved to recycle bin", allres })
+  } catch (e) {
+    console.log(`Error While deletenotesandStoreResycalBin :${e}`)
   }
 }

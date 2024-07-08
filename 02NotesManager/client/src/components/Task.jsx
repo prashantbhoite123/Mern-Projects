@@ -29,9 +29,8 @@ import {
 import { MdDelete } from "react-icons/md"
 import { FaEdit, FaRoad } from "react-icons/fa"
 
-
-function Task({ todos }) {
-
+function Task({ todos, toggleSelectNote, isSelected }) {
+  const dispatch = useDispatch()
   const { deleteToggle } = useSelector((state) => state.user)
 
   const { isOpen, onOpen, onClose } = useDisclosure()
@@ -43,15 +42,14 @@ function Task({ todos }) {
 
   const [multipaledelete, setMultipaldelete] = useState([])
 
-  console.log(multipaledelete)
+  // console.log(multipaledelete)
   const handelChange = (e) => {
     setUpdate({ ...update, [e.target.name]: e.target.value })
   }
-
   const handelUpdate = async () => {
     try {
       const res = await fetch(`/api/thinks/updateNote/${todos._id}`, {
-        method: "PUT",
+        method: "DELETE",
         headers: {
           "Content-Type": "application/json",
         },
@@ -74,7 +72,25 @@ function Task({ todos }) {
       toast.error(`error while update:${e}`)
     }
   }
-
+ const handleDelete = async () => {
+   try {
+     const res = await fetch(`/api/thinks/deleteNote/${todos._id}`, {
+       method: "DELETE",
+       headers: {
+         "Content-Type": "application/json",
+       },
+       credentials: "include",
+     })
+     const data = await res.json()
+     if (data.success) {
+       toast.success(data.message)
+     } else {
+       toast.error(data.message)
+     }
+   } catch (error) {
+     toast.error(`Error deleting note: ${error.message}`)
+   }
+ }
   return (
     <>
       <SimpleGrid
@@ -95,8 +111,8 @@ function Task({ todos }) {
                 type="checkbox"
                 w={"20"}
                 name="checkbox"
-                defaultChecked={setdelete.isComplete}
-                onChange={() => setMultipaldelete(todos._id)}
+                checked={isSelected}
+                onChange={() => toggleSelectNote(todos._id)}
               />
             ) : (
               <Button onClick={onOpen} type="button" outline={"none"}>
