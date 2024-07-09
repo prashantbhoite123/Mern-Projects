@@ -3,6 +3,7 @@ import { toast } from "react-hot-toast"
 import { useSelector, useDispatch } from "react-redux"
 import { toggleDelete } from "../App/Feature/userSlice"
 import { restorenots } from "../App/Feature/restore"
+import { BottomShow } from "../Hooks/toast"
 import {
   Modal,
   ModalOverlay,
@@ -23,6 +24,7 @@ import {
 } from "@chakra-ui/react"
 import { MdDelete } from "react-icons/md"
 import { CgAdd } from "react-icons/cg"
+
 import { useEffect } from "react"
 import Task from "../components/Task"
 import { RiAedElectrodesLine } from "react-icons/ri"
@@ -38,8 +40,9 @@ function AllNotes() {
   const [notes, setNotes] = useState([])
 
   const [todos, setTodos] = useState([])
+  // console.log(todos)
   const [search, setSearch] = useState("")
-  const [searchval, setSearchVal] = useState([]) // Rename state to setSearchVal for clarity
+  const [searchval, setSearchVal] = useState([])
   const [selectedNotes, setSelectedNotes] = useState([])
   const handelChange = (e) => {
     setNotes({ ...notes, [e.target.name]: e.target.value })
@@ -82,7 +85,7 @@ function AllNotes() {
       .then((res) => res.json())
       .then((data) => setTodos(data))
       .catch((error) => {
-        console.log(`Error fetching notes: ${error}`)
+        toast.error(`Error fetching notes: ${error}`)
       })
   }, [todos, searchval, search, notes])
 
@@ -108,35 +111,23 @@ function AllNotes() {
       const data = await res.json()
       if (Array.isArray(data) && data.length === 0) {
         toast.error("No notes found with that title")
-        setSearchVal([])
+        setSearch("")
       } else {
         setSearchVal(data)
+        setSearch("")
       }
     } catch (error) {
       toast.error(error.message)
     }
   }
 
-  // const handeldelete = async () => {
-  //   try {
-  //     const res = await fetch("/api/thinks/multipaldelnotes", {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //       credentials: "include",
-  //       body: JSON.stringify({ ids: selectedNotes }),
-  //     })
-  //     const data = await res.json()
-  //     console.log("this is delete data",data)
-  //     dispatch(toggleDelete())
-  //   } catch (e) {
-  //     toast.error(e.message)
-  //   }
-  // }
-
   const handeldelete = async () => {
     try {
+      if (selectedNotes.length === 0) {
+        toast.error("No Notes Available ")
+        dispatch(toggleDelete())
+        return
+      }
       const res = await fetch("/api/thinks/deleteAndSroreRebin", {
         method: "POST",
         headers: {
@@ -146,8 +137,10 @@ function AllNotes() {
         body: JSON.stringify({ ids: selectedNotes }),
       })
       const data = await res.json()
-      console.log("this is delete data", data)
-      dispatch(restorenots(data.allres))
+      if (data.success === false) {
+        toast.error(data.message)
+      }
+      toast.success(data.message)
       dispatch(toggleDelete())
     } catch (e) {
       toast.error(e.message)
@@ -161,14 +154,33 @@ function AllNotes() {
         : [...prevSelected, noteId]
     )
   }
+
+  const handelShort = async () => {
+    try {
+      const res = await fetch("/api/thinks/shortNotes", {
+        method: "GET",
+        credentials: "include",
+      })
+      const data = await res.json()
+      console.log(data)
+    } catch (e) {
+      toast.error(e.message)
+    }
+  }
   return (
     <>
-      <div className="flex justify-center text-4xl">All Notes</div>
+      <div className="flex justify-center text-4xl mt-2 text-gray-300 font-semibold">
+        <span className="text-orange-500 italic">All</span>-Notes
+      </div>
       <HStack h={"50"} w={"full"} justifyContent={"space-between"} mt={"30"}>
         <VStack>
           <FormControl display={"flex"}>
             <Input
+              borderColor={"lightgreen"}
               type="text"
+              fontStyle={"oblique"}
+              fontWeight={"600"}
+              value={search}
               onChange={(e) => setSearch(e.target.value)}
               ml={"4"}
               placeholder="Search Notes here..."
@@ -176,6 +188,7 @@ function AllNotes() {
             <Button
               type="submit"
               onClick={handelSearch}
+              borderColor={"lightgreen"}
               ml={"2"}
               variant={"outline"}
             >
@@ -184,19 +197,35 @@ function AllNotes() {
           </FormControl>
         </VStack>
 
-        <VStack>
+        <HStack display={"flex"} justifyContent={"sp"}>
+          <Button
+            variant={"outline"}
+            borderColor={"aqua"}
+            onClick={handelShort}
+          >
+            Short
+          </Button>
           {deleteToggle ? (
-            <Button mr={"10"} onClick={handeldelete}>
+            <Button
+              mr={"10"}
+              variant={"outline"}
+              borderColor={"red"}
+              onClick={handeldelete}
+            >
               <MdDelete />
             </Button>
           ) : (
-            <Button mr={"10"} onClick={(e) => dispatch(toggleDelete())}>
+            <Button
+              mr={"10"}
+              variant={"outline"}
+              borderColor={"orange"}
+              onClick={(e) => dispatch(toggleDelete())}
+            >
               <RiAedElectrodesLine />
             </Button>
           )}
-        </VStack>
+        </HStack>
       </HStack>
-
       <Box mt={"10"}>
         <Button
           variant={"none"}
@@ -211,7 +240,6 @@ function AllNotes() {
           <CgAdd />
         </Button>
       </Box>
-
       <Modal
         initialFocusRef={initialRef}
         finalFocusRef={finalRef}
@@ -220,23 +248,29 @@ function AllNotes() {
       >
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader color={"yellow"}>Add Your Things</ModalHeader>
+          <ModalHeader color={"orange"}>Add Your Things</ModalHeader>
           <ModalCloseButton />
           <ModalBody pb={6}>
             <FormControl>
-              <FormLabel color={"yellow"}>Title</FormLabel>
+              <FormLabel color={"aqua"}>Title</FormLabel>
               <Input
+                borderColor={"lightgreen"}
+                fontWeight={"500"}
+                fontStyle={"oblique"}
                 ref={initialRef}
                 name="title"
-                placeholder="Enter title"
+                placeholder="Enter Title...."
                 onChange={handelChange}
               />
             </FormControl>
 
             <FormControl mt={4}>
-              <FormLabel color={"yellow"}>Description</FormLabel>
+              <FormLabel color={"aqua"}>Description</FormLabel>
               <Textarea
-                placeholder="Enter description"
+                borderColor={"lightgreen"}
+                fontWeight={"500"}
+                fontStyle={"oblique"}
+                placeholder="Enter description...."
                 name="description"
                 onChange={handelChange}
               />
@@ -246,13 +280,15 @@ function AllNotes() {
           <ModalFooter>
             <Button
               type="submit"
-              colorScheme="blue"
+              colorScheme="orange"
               mr={3}
               onClick={handelNotesApi}
             >
               Save
             </Button>
-            <Button onClick={onClose}>Cancel</Button>
+            <Button onClick={onClose} variant={"outline"} borderColor={"red"}>
+              Cancel
+            </Button>
           </ModalFooter>
         </ModalContent>
       </Modal>
@@ -264,24 +300,34 @@ function AllNotes() {
         mt={"10"}
       >
         {searchval.length > 0
-          ? searchval.map((todo, index) => (
-              <div className="w-[24rem] mx-4 mt-7" key={index}>
-                <Task
-                  todos={todo}
-                  toggleSelectNote={toggleSelectNote}
-                  isSelected={selectedNotes.includes(todo._id)}
-                />
-              </div>
-            ))
-          : todos.map((todo, index) => (
-              <div className="w-[24rem] mx-4 mt-7" key={index}>
-                <Task
-                  todos={todo}
-                  toggleSelectNote={toggleSelectNote}
-                  isSelected={selectedNotes.includes(todo._id)}
-                />
-              </div>
-            ))}
+          ? searchval.map((todo, index) => {
+              if (todo.isComplete === true) {
+                return null
+              }
+              return (
+                <div className="w-[24rem] mx-4 mt-7" key={index}>
+                  <Task
+                    todos={todo}
+                    toggleSelectNote={toggleSelectNote}
+                    isSelected={selectedNotes.includes(todo._id)}
+                  />
+                </div>
+              )
+            })
+          : todos.map((todo, index) => {
+              if (todo.isComplete === true) {
+                return null
+              }
+              return (
+                <div className="w-[24rem] mx-4 mt-7" key={index}>
+                  <Task
+                    todos={todo}
+                    toggleSelectNote={toggleSelectNote}
+                    isSelected={selectedNotes.includes(todo._id)}
+                  />
+                </div>
+              )
+            })}
       </Box>
     </>
   )

@@ -5,7 +5,9 @@ import {
   deletenotesandStoreResycalBin,
   getallnotes,
   Notescreate,
+  restoreNotes,
   searchNote,
+  shortNotes,
   singleFDelete,
   updateNotes,
 } from "../controllers/notes.controllers.js"
@@ -25,4 +27,7 @@ notesRoute.post(
   isAuthentication,
   deletenotesandStoreResycalBin
 )
+notesRoute.put("/restoreNote", isAuthentication, restoreNotes)
+notesRoute.get("/shortNotes", isAuthentication, shortNotes)
+
 export default notesRoute

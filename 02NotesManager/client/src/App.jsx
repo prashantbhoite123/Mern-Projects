@@ -8,6 +8,7 @@ import SignIn from "./Pages/SignIn"
 import Profile from "./Pages/Profile"
 import ProtectRouter from "./components/ProtectRouter"
 import AllNotes from "./Pages/AllNotes"
+import Footer from "./components/Footer"
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
             <Route path="/" element={<AllNotes />} />
           </Route>
         </Routes>
+        <Footer />
       </Router>
     </>
   )

@@ -18,7 +18,8 @@ import {
 import { useSelector } from "react-redux"
 import { Link } from "react-router-dom"
 import { BiMenuAltLeft } from "react-icons/bi"
-
+import { FcFilledFilter } from "react-icons/fc"
+import { FcEmptyTrash } from "react-icons/fc"
 function Header() {
   const { currentUser } = useSelector((state) => state.user)
   // console.log("This is a currentUser", currentUser)
@@ -43,8 +44,8 @@ function Header() {
       <Drawer isOpen={isOpen} placement="left" onClose={onClose}>
         <DrawerOverlay />
         <DrawerContent>
-          <DrawerCloseButton />
-          <DrawerHeader>
+          <DrawerCloseButton color={"black"} />
+          <DrawerHeader bg={"orange"}>
             {currentUser ? (
               <Link className="flex" onClick={onClose} to={"/profile"}>
                 <Img
@@ -52,26 +53,42 @@ function Header() {
                   borderRadius={"full"}
                   src={currentUser.profilepic}
                 />
-                <h1 className="mx-6 font-bold  text-2xl text-red-300 ">
+                <h1 className="mx-6 font-bold  text-2xl text-black">
                   {currentUser.name}
                 </h1>
               </Link>
             ) : (
-              <Link className="flex" to={"/sign-in"}>
-                <Button onClick={onClose}>Sign In</Button>
-              </Link>
+              <Button
+                onClick={onClose}
+                variant={"outline"}
+                borderColor={"lightgreen"}
+              >
+                <Link
+                  className="flex text-black font-semibold italic text-lg"
+                  to={"/sign-in"}
+                >
+                  {" "}
+                  Sign In
+                </Link>
+              </Button>
             )}
           </DrawerHeader>
           <DrawerBody>
-            <VStack alignItems={"flex-start"}>
-              <Button onClick={onClose} variant={"ghost"}>
-                <Link to={"/"}>All Notes</Link>
-              </Button>
+            {currentUser ? (
+              <VStack alignItems={"flex-start"}>
+                <Button onClick={onClose} fontSize={"20"} variant={"ghost"} gap={"5"}>
+                  <FcFilledFilter />
+                  <Link to={"/"}>All Notes</Link>
+                </Button>
 
-              <Button onClick={onClose} variant={"ghost"}>
-                <Link to={"/recycle-bin"}>Recycle bin</Link>
-              </Button>
-            </VStack>
+                <Button onClick={onClose} fontSize={"20"} variant={"ghost"} gap={"5"}>
+                  <FcEmptyTrash />
+                  <Link to={"/recycle-bin"}>Recycle bin</Link>
+                </Button>
+              </VStack>
+            ) : (
+              ""
+            )}
             <HStack pos={"absolute"} left={"5"} bottom={"10"}>
               {currentUser ? (
                 <Box
@@ -85,8 +102,8 @@ function Header() {
                     src="https://previews.123rf.com/images/wikagraphic/wikagraphic2102/wikagraphic210207110/164822483-rt-initial-logo-company-name-colored-blue-and-magenta-swoosh-design-isolated-on-white-background.jpg"
                   />
 
-                  <Text fontSize={"25"} fontWeight={"bold"} mx={"5"}>
-                    REAL THINKAR
+                  <Text fontSize={"25"} fontWeight={"semibold"} mx={"5"}>
+                    <span className="italic text-orange-500">REAL</span>_THINKAR
                   </Text>
                 </Box>
               ) : (

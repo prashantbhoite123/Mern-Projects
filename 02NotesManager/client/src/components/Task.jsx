@@ -28,6 +28,8 @@ import {
 
 import { MdDelete } from "react-icons/md"
 import { FaEdit, FaRoad } from "react-icons/fa"
+import { MdPushPin } from "react-icons/md"
+import { RiUnpinFill } from "react-icons/ri"
 
 function Task({ todos, toggleSelectNote, isSelected }) {
   const dispatch = useDispatch()
@@ -38,18 +40,14 @@ function Task({ todos, toggleSelectNote, isSelected }) {
   const finalRef = React.useRef(null)
 
   const [update, setUpdate] = useState([])
-  const [setdelete, setnewdelete] = useState(false)
 
-  const [multipaledelete, setMultipaldelete] = useState([])
-
-  // console.log(multipaledelete)
   const handelChange = (e) => {
     setUpdate({ ...update, [e.target.name]: e.target.value })
   }
   const handelUpdate = async () => {
     try {
       const res = await fetch(`/api/thinks/updateNote/${todos._id}`, {
-        method: "DELETE",
+        method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
@@ -60,7 +58,7 @@ function Task({ todos, toggleSelectNote, isSelected }) {
         }),
       })
       const data = await res.json()
-      setnewdelete(data.notesUpdated)
+
       if (data.success === false) {
         toast.error(data.message)
         throw new Error()
@@ -72,40 +70,57 @@ function Task({ todos, toggleSelectNote, isSelected }) {
       toast.error(`error while update:${e}`)
     }
   }
- const handleDelete = async () => {
-   try {
-     const res = await fetch(`/api/thinks/deleteNote/${todos._id}`, {
-       method: "DELETE",
-       headers: {
-         "Content-Type": "application/json",
-       },
-       credentials: "include",
-     })
-     const data = await res.json()
-     if (data.success) {
-       toast.success(data.message)
-     } else {
-       toast.error(data.message)
-     }
-   } catch (error) {
-     toast.error(`Error deleting note: ${error.message}`)
-   }
- }
+  const handleDelete = async () => {
+    try {
+      const res = await fetch(`/api/thinks/deleteNote/${todos._id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+      })
+      const data = await res.json()
+      if (data.success) {
+        toast.success(data.message)
+      } else {
+        toast.error(data.message)
+      }
+    } catch (error) {
+      toast.error(`Error deleting note: ${error.message}`)
+    }
+  }
+
+  const cardStyle = () => {}
   return (
     <>
       <SimpleGrid
         spacing={4}
         templateColumns="repeat(auto-fill, minmax(200px, 1fr))"
       >
-        <Card>
+        <Card
+          bg={"wheat"}
+          variant={"outline"}
+          rounded={"20"}
+          borderColor={"lightseagreen"}
+        >
           <CardHeader
+            rounded={"20"}
             display={"flex"}
             justifyContent={"end"}
             alignItems={"center"}
             w={"full"}
             height={"10"}
-            bg={"grey"}
+            bg={"orange"}
           >
+            <Button
+              rounded={"full"}
+              fontSize={"24"}
+              color={"black"}
+              type="button"
+            >
+              <MdPushPin />
+            </Button>
+
             {deleteToggle ? (
               <input
                 type="checkbox"
@@ -115,21 +130,36 @@ function Task({ todos, toggleSelectNote, isSelected }) {
                 onChange={() => toggleSelectNote(todos._id)}
               />
             ) : (
-              <Button onClick={onOpen} type="button" outline={"none"}>
+              <Button
+                onClick={onOpen}
+                variant={"outline"}
+                rounded={"full"}
+                color={"black"}
+                type="button"
+                outline={"none"}
+              >
                 <FaEdit />
               </Button>
             )}
           </CardHeader>
           <CardHeader>
-            <Heading size="md">{todos.title} </Heading>
+            <FormLabel color={"blue"}>Tittle</FormLabel>
+            <Heading
+              color={"black"}
+              fontSize={"24"}
+              fontStyle={"italic"}
+              textAlign={"center"}
+              size="md"
+            >
+              {todos.title}
+            </Heading>
           </CardHeader>
           <CardBody>
-            <FormLabel color={"yellow"}>Description</FormLabel>
-            <Text>{todos.description}</Text>
+            <FormLabel color={"blue"}>Description :-</FormLabel>
+            <Text fontSize={"20"} color={"black"} fontWeight={"500"}>
+              {todos.description}
+            </Text>
           </CardBody>
-          <CardFooter>
-            <Button>View here</Button>
-          </CardFooter>
         </Card>
       </SimpleGrid>
       <Modal

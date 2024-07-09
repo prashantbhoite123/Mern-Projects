@@ -15,6 +15,7 @@ const notesSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
+
     isComplete: {
       type: Boolean,
       default: false,

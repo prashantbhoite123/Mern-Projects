@@ -104,7 +104,7 @@ function Profile() {
   return (
     <>
       {istaskUpdate ? (
-        <Box py={["15vh", "0vh"]} px={["0vw", "28vw"]}>
+        <Box  py={["15vh", "0vh"]} px={["0vw", "28vw"]}>
           <form type="submit">
             <VStack
               maxW="md"

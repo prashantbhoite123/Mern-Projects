@@ -110,14 +110,8 @@ export const deletenotesandStoreResycalBin = async (req, res, next) => {
   try {
     const { ids } = req.body
     if (!ids || !Array.isArray(ids)) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Invalid responce" })
+      return next(errorHandler(400, "Invalid response"))
     }
-
-    const allres = await Notes.find({ _id: ids })
-    console.log(allres)
-
     const result = await Notes.updateMany(
       { _id: { $in: ids } },
       { $set: { isComplete: true } }
@@ -125,10 +119,45 @@ export const deletenotesandStoreResycalBin = async (req, res, next) => {
     if (result.length === 0) {
       return next(errorHandler(400, "No Notes Found"))
     }
-    res
-      .status(200)
-      .json({ success: true, message: "Notes moved to recycle bin", allres })
+    res.status(200).json({
+      success: true,
+      message: `${result.modifiedCount} Notes Move to resycal bin`,
+    })
   } catch (e) {
     console.log(`Error While deletenotesandStoreResycalBin :${e}`)
+  }
+}
+
+export const restoreNotes = async (req, res, next) => {
+  try {
+    const { idx } = req.body
+    if (!idx && Array.isArray(idx)) {
+      return next(errorHandler(400, "Invalid responce"))
+    }
+
+    const result = await Notes.updateMany(
+      { _id: { $in: idx } },
+      { $set: { isComplete: false } }
+    )
+    console.log(result)
+    if (!result) {
+      return next(errorHandler(400, "No notes available for restore"))
+    }
+    res
+      .status(200)
+      .json({ success: true, message: `${result.matchedCount} Notes Restore` })
+  } catch (e) {
+    console.log(`Error While Restore Api :${e}`)
+  }
+}
+
+export const shortNotes = async (req, res) => {
+  try {
+    const short = await Notes.find({ user: req.user._id }).sort({
+      updateAt: -1,
+    })
+    res.status(200).json(short)
+  } catch (e) {
+    console.log(`Error While shortNotes :${e}`)
   }
 }

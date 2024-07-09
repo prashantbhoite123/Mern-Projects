@@ -47,7 +47,7 @@ function SignIn() {
       }
       dispatch(fetchFail())
       dispatch(fetchSuccess(data.rest))
-      toast.success(data.message)
+      toast.success(`Welcome ${data.rest.name}`)
       navigate("/")
     } catch (e) {
       console.log(`Error while Sign-in api`)
