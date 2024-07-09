@@ -30,6 +30,7 @@ import { MdDelete } from "react-icons/md"
 import { FaEdit, FaRoad } from "react-icons/fa"
 import { MdPushPin } from "react-icons/md"
 import { RiUnpinFill } from "react-icons/ri"
+import { color } from "framer-motion"
 
 function Task({ todos, toggleSelectNote, isSelected }) {
   const dispatch = useDispatch()
@@ -90,7 +91,18 @@ function Task({ todos, toggleSelectNote, isSelected }) {
     }
   }
 
-  const cardStyle = () => {}
+  const handelPin = async () => {
+    try {
+      const res = await fetch(`/api/thinks/notesPin/${todos._id}`, {
+        method: "GET",
+        credentials: "include",
+      })
+      const data = await res.json()
+      console.log(data)
+    } catch (e) {
+      toast.error(e.message)
+    }
+  }
   return (
     <>
       <SimpleGrid
@@ -115,8 +127,9 @@ function Task({ todos, toggleSelectNote, isSelected }) {
             <Button
               rounded={"full"}
               fontSize={"24"}
-              color={"black"}
               type="button"
+              color={todos.isPin ? "red" : "black"}
+              onClick={handelPin}
             >
               <MdPushPin />
             </Button>
@@ -170,24 +183,30 @@ function Task({ todos, toggleSelectNote, isSelected }) {
       >
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader color={"yellow"}>Update Your Notes</ModalHeader>
+          <ModalHeader color={"orange"}>Update Your Notes</ModalHeader>
           <ModalCloseButton />
           <ModalBody pb={6}>
             <FormControl>
-              <FormLabel color={"yellow"}>Title</FormLabel>
+              <FormLabel color={"aqua"}>Title</FormLabel>
               <Input
+                borderColor={"lightgreen"}
+                fontWeight={"500"}
+                fontStyle={"oblique"}
                 ref={initialRef}
                 name="title"
                 defaultValue={todos.title}
-                placeholder="First name"
+                placeholder="Enter a title..."
                 onChange={handelChange}
               />
             </FormControl>
 
             <FormControl mt={4}>
-              <FormLabel color={"yellow"}>Description</FormLabel>
+              <FormLabel color={"aqua"}>Description :-</FormLabel>
               <Textarea
-                placeholder="Description"
+                borderColor={"lightgreen"}
+                fontWeight={"500"}
+                fontStyle={"oblique"}
+                placeholder="Enter description...."
                 name="description"
                 defaultValue={todos.description}
                 onChange={handelChange}
@@ -198,13 +217,15 @@ function Task({ todos, toggleSelectNote, isSelected }) {
           <ModalFooter>
             <Button
               type="submit"
-              colorScheme="blue"
+              colorScheme="orange"
               mr={3}
               onClick={handelUpdate}
             >
               Save
             </Button>
-            <Button onClick={onClose}>Cancel</Button>
+            <Button onClick={onClose} variant={"outline"} borderColor={"red"}>
+              Cancel
+            </Button>
           </ModalFooter>
         </ModalContent>
       </Modal>

@@ -64,6 +64,21 @@ function TaskResycalBin({ todo, toggleSelectNote, isSelected }) {
       toast.error(e.message)
     }
   }
+
+  const handelPin = async () => {
+    try {
+      const res = await fetch(`/api/thinks/notesPin/${todo._id}`, {
+        method: "GET",
+        credentials: "include",
+      })
+      const data = await res.json()
+      console.log(data)
+    } catch (e) {
+      toast.error(e.message)
+    }
+  }
+
+ 
   return (
     <>
       <SimpleGrid
@@ -88,8 +103,9 @@ function TaskResycalBin({ todo, toggleSelectNote, isSelected }) {
             <Button
               rounded={"full"}
               fontSize={"24"}
-              color={"black"}
+              color={todo.isPin ? "red" : "black"}
               type="button"
+              onClick={handelPin}
             >
               <MdPushPin />
             </Button>

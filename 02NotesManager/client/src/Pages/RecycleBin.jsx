@@ -190,9 +190,32 @@ function RecycleBin() {
         flexWrap={"wrap"}
         mt={"10"}
       >
+        {todos.map((todo, index) => {
+          if (todo.isPin === true) {
+            return (
+              <div className="w-[24rem] mx-4 mt-7" key={index}>
+                <Task
+                  todos={todo}
+                  toggleSelectNote={toggleSelectNote}
+                  isSelected={selectedNotes.includes(todo._id)}
+                />
+              </div>
+            )
+          } else {
+            return null
+          }
+        })}
+      </Box>
+
+      <Box
+        display={"flex"}
+        justifyContent={"space-evenly"}
+        flexWrap={"wrap"}
+        mt={"10"}
+      >
         {getsearch.length > 0
           ? getsearch.map((todo, index) => {
-              if (todo.isComplete === false) {
+              if (todo.isComplete === false && todo.isPin === true) {
                 return null
               }
               return (
@@ -206,7 +229,7 @@ function RecycleBin() {
               )
             })
           : todos.map((todo, index) => {
-              if (todo.isComplete === false) {
+              if (todo.isComplete === false && todo.isPin === true) {
                 return null
               }
               return (

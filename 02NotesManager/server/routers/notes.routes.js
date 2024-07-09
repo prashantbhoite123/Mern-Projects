@@ -5,6 +5,7 @@ import {
   deletenotesandStoreResycalBin,
   getallnotes,
   Notescreate,
+  NotesPin,
   restoreNotes,
   searchNote,
   shortNotes,
@@ -29,5 +30,6 @@ notesRoute.post(
 )
 notesRoute.put("/restoreNote", isAuthentication, restoreNotes)
 notesRoute.get("/shortNotes", isAuthentication, shortNotes)
+notesRoute.get("/notesPin/:id", isAuthentication, NotesPin)
 
 export default notesRoute

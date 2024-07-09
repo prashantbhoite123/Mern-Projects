@@ -151,6 +151,16 @@ export const restoreNotes = async (req, res, next) => {
   }
 }
 
+export const NotesPin = async (req, res) => {
+  const { id } = req.params
+
+  const pinNote = await Notes.findById(id)
+  pinNote.isPin = !pinNote.isPin
+
+  await pinNote.save()
+  res.status(200).json({ success: true, message: "Notes pin", pinNote })
+}
+
 export const shortNotes = async (req, res) => {
   try {
     const short = await Notes.find({ user: req.user._id }).sort({

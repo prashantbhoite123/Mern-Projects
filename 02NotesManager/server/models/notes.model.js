@@ -15,7 +15,10 @@ const notesSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
-
+    isPin: {
+      type: Boolean,
+      default: false,
+    },
     isComplete: {
       type: Boolean,
       default: false,

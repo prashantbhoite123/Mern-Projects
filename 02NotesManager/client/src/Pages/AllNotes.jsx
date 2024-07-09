@@ -2,8 +2,7 @@ import React, { useState } from "react"
 import { toast } from "react-hot-toast"
 import { useSelector, useDispatch } from "react-redux"
 import { toggleDelete } from "../App/Feature/userSlice"
-import { restorenots } from "../App/Feature/restore"
-import { BottomShow } from "../Hooks/toast"
+
 import {
   Modal,
   ModalOverlay,
@@ -291,8 +290,29 @@ function AllNotes() {
             </Button>
           </ModalFooter>
         </ModalContent>
-      </Modal>
-
+      </Modal>{" "}
+      <Box
+        display={"flex"}
+        justifyContent={"space-evenly"}
+        flexWrap={"wrap"}
+        mt={"10"}
+      >
+        {todos.map((todo, index) => {
+          if (todo.isPin === true) {
+            return (
+              <div className="w-[24rem] mx-4 mt-7" key={index}>
+                <Task
+                  todos={todo}
+                  toggleSelectNote={toggleSelectNote}
+                  isSelected={selectedNotes.includes(todo._id)}
+                />
+              </div>
+            )
+          } else {
+            return null
+          }
+        })}
+      </Box>
       <Box
         display={"flex"}
         justifyContent={"space-evenly"}
@@ -301,7 +321,7 @@ function AllNotes() {
       >
         {searchval.length > 0
           ? searchval.map((todo, index) => {
-              if (todo.isComplete === true) {
+              if (todo.isComplete === true && todo.isPin === true) {
                 return null
               }
               return (
@@ -315,7 +335,7 @@ function AllNotes() {
               )
             })
           : todos.map((todo, index) => {
-              if (todo.isComplete === true) {
+              if (todo.isComplete === true && todo.isPin === true) {
                 return null
               }
               return (
